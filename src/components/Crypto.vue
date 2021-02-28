@@ -10,6 +10,9 @@
             >
             <div class="mt-1 relative rounded-md shadow-md">
               <input
+                v-model="newTiket"
+                v-on:keypress="clearError"
+                v-on:keypress.enter="searchTiket"
                 type="text"
                 name="wallet"
                 id="wallet"
@@ -41,11 +44,14 @@
                 CHD
               </span>
             </div>
-            <div class="text-sm text-red-600">Такой тикер уже добавлен</div>
+            <div class="text-sm text-red-600">
+              {{error}}
+            </div>
           </div>
         </div>
         <button
           type="button"
+          v-on:click="searchTiket"
           class="my-4 inline-flex items-center py-2 px-4 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-full text-white bg-gray-600 hover:bg-gray-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
         >
           <!-- Heroicon name: solid/mail -->
@@ -66,106 +72,20 @@
       </section>
 
       <hr class="w-full border-t border-gray-600 my-4" />
+
       <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
         <div
+          v-for="tiker of tikerList"
+          :key="tiker.name"
           class="bg-white overflow-hidden shadow rounded-lg border-purple-800 border-solid cursor-pointer"
+          :class="{'border-4': false}"
         >
           <div class="px-4 py-5 sm:p-6 text-center">
             <dt class="text-sm font-medium text-gray-500 truncate">
-              WTF - USD
+              {{tiker.name}} - USD
             </dt>
             <dd class="mt-1 text-3xl font-semibold text-gray-900">
-              1.11
-            </dd>
-          </div>
-          <div class="w-full border-t border-gray-200"></div>
-          <button
-            class="flex items-center justify-center font-medium w-full bg-gray-100 px-4 py-4 sm:px-6 text-md text-gray-500 hover:text-gray-600 hover:bg-gray-200 hover:opacity-20 transition-all focus:outline-none"
-          >
-            <svg
-              class="h-5 w-5"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="#718096"
-              aria-hidden="true"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                clip-rule="evenodd"
-              ></path></svg
-            >Удалить
-          </button>
-        </div>
-        <div
-          class="bg-white overflow-hidden shadow rounded-lg border-purple-800 border-solid border-4 cursor-pointer"
-        >
-          <div class="px-4 py-5 sm:p-6 text-center">
-            <dt class="text-sm font-medium text-gray-500 truncate">
-              VUE - RUB
-            </dt>
-            <dd class="mt-1 text-3xl font-semibold text-gray-900">
-              80000.00
-            </dd>
-          </div>
-          <div class="w-full border-t border-gray-200"></div>
-          <button
-            class="flex items-center justify-center font-medium w-full bg-gray-100 px-4 py-4 sm:px-6 text-md text-gray-500 hover:text-gray-600 hover:bg-gray-200 hover:opacity-20 transition-all focus:outline-none"
-          >
-            <svg
-              class="h-5 w-5"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="#718096"
-              aria-hidden="true"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                clip-rule="evenodd"
-              ></path></svg
-            >Удалить
-          </button>
-        </div>
-        <div
-          class="bg-white overflow-hidden shadow rounded-lg border-purple-800 border-solid cursor-pointer"
-        >
-          <div class="px-4 py-5 sm:p-6 text-center">
-            <dt class="text-sm font-medium text-gray-500 truncate">
-              BTC - USD
-            </dt>
-            <dd class="mt-1 text-3xl font-semibold text-gray-900">
-              99999.99
-            </dd>
-          </div>
-          <div class="w-full border-t border-gray-200"></div>
-          <button
-            class="flex items-center justify-center font-medium w-full bg-gray-100 px-4 py-4 sm:px-6 text-md text-gray-500 hover:text-gray-600 hover:bg-gray-200 hover:opacity-20 transition-all focus:outline-none"
-          >
-            <svg
-              class="h-5 w-5"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="#718096"
-              aria-hidden="true"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                clip-rule="evenodd"
-              ></path></svg
-            >Удалить
-          </button>
-        </div>
-        <div
-          class="bg-white overflow-hidden shadow rounded-lg border-purple-800 border-solid cursor-pointer"
-        >
-          <div class="px-4 py-5 sm:p-6 text-center">
-            <dt class="text-sm font-medium text-gray-500 truncate">
-              DOGE - USD
-            </dt>
-            <dd class="mt-1 text-3xl font-semibold text-gray-900">
-              0.0014
+              {{tiker.value}} $
             </dd>
           </div>
           <div class="w-full border-t border-gray-200"></div>
@@ -188,7 +108,9 @@
           </button>
         </div>
       </dl>
+
       <hr class="w-full border-t border-gray-600 my-4" />
+
       <section class="relative">
         <h3 class="text-lg leading-6 font-medium text-gray-900 my-8">
           VUE - USD
@@ -234,6 +156,55 @@ import Spiner from './Spiner.vue';
 export default {
   components: { Spiner },
   name: "Crypro",
+  data() {
+    return {
+      newTiket: "",
+      tikerList: [],
+      error: null,
+    };
+  },
+  methods: {
+    searchTiket: async function() {
+      let self = this;
+      if (this.isValidTiket()) {
+        await fetch(`https://min-api.cryptocompare.com/data/price?fsym=${this.newTiket}&tsyms=USD&api_key=9b53fb3b2daab7f7df34d09bcf8b32266a23d799a8e23af20b601c381e349161`)
+          .then(response => {
+            if (response.status == 200) {
+              return response.json();
+            }
+            throw Error("Сервер не отвечает");
+          })
+          .then(exchange => {
+            if (exchange.USD) {
+              self.tikerList.push({
+                name: self.newTiket.toUpperCase(),
+                value: exchange.USD,
+              });
+              self.newTiket = "";
+            } else {
+              throw Error("Токен не найден");
+            }
+          })
+          .catch(err => {
+            self.error = err;
+          });
+      }
+    },
+    isValidTiket: function() {
+      if (this.newTiket == "") {
+        this.error = "Введите тикер";
+        return false;
+      }
+      if (this.tikerList.some(tiker => tiker.name == this.newTiket.toUpperCase())) {
+        this.error = "Такой тикер уже добавлен";
+        return false;
+      }
+      return true;
+    },
+    clearError: function() {
+      this.error = null;
+    }
+  }
 };
 </script>
 
