@@ -23,6 +23,7 @@
             <div
               class="flex bg-white shadow-md p-1 rounded-md shadow-md flex-wrap"
             >
+            @todo
               <span
                 class="inline-flex items-center px-2 m-1 rounded-md text-xs font-medium bg-gray-300 text-gray-800 cursor-pointer"
               >
@@ -78,9 +79,11 @@
           v-for="tiker of tikerList"
           :key="tiker.name"
           class="bg-white overflow-hidden shadow rounded-lg border-purple-800 border-solid cursor-pointer"
-          :class="{'border-4': false}"
+          :class="{'border-4': isSelected(tiker.name)}"
         >
-          <div class="px-4 py-5 sm:p-6 text-center">
+          <div
+            @click="select(tiker.name)"
+            class="px-4 py-5 sm:p-6 text-center">
             <dt class="text-sm font-medium text-gray-500 truncate">
               {{tiker.name}} - USD
             </dt>
@@ -90,6 +93,7 @@
           </div>
           <div class="w-full border-t border-gray-200"></div>
           <button
+            @click="removeTiketByName(tiker.name)"
             class="flex items-center justify-center font-medium w-full bg-gray-100 px-4 py-4 sm:px-6 text-md text-gray-500 hover:text-gray-600 hover:bg-gray-200 hover:opacity-20 transition-all focus:outline-none"
           >
             <svg
@@ -111,17 +115,22 @@
 
       <hr class="w-full border-t border-gray-600 my-4" />
 
-      <section class="relative">
+      <section
+        v-if="selected"
+        class="relative">
         <h3 class="text-lg leading-6 font-medium text-gray-900 my-8">
-          VUE - USD
+          {{selected}} - USD
         </h3>
         <div class="flex items-end border-gray-600 border-b border-l h-64">
-          <div class="bg-purple-800 border w-10 h-24"></div>
-          <div class="bg-purple-800 border w-10 h-32"></div>
-          <div class="bg-purple-800 border w-10 h-48"></div>
-          <div class="bg-purple-800 border w-10 h-16"></div>
+          <div
+            v-for="(val, index) of normilizeGraph()"
+            :key="index"
+            class="bg-purple-800 border w-10" :style="{'height': val+'%'}"></div>
         </div>
-        <button type="button" class="absolute top-0 right-0">
+        <button
+          @click="select(null)"
+          type="button"
+          class="absolute top-0 right-0">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -160,10 +169,43 @@ export default {
     return {
       newTiket: "",
       tikerList: [],
+      selected: null,
+      graph: [],
       error: null,
     };
   },
+  created: function () {
+    setInterval(this.update, 5000);
+  },
   methods: {
+    update: function() {
+      if (!this.tikerList) {
+        return false;
+      }
+      this.tikerList.forEach(async (tiker) => {
+        let self = this;
+        await fetch(`https://min-api.cryptocompare.com/data/price?fsym=${tiker.name}&tsyms=USD&api_key=9b53fb3b2daab7f7df34d09bcf8b32266a23d799a8e23af20b601c381e349161`)
+          .then(response => {
+            if (response.status == 200) {
+              return response.json();
+            }
+            throw Error("Сервер не отвечает");
+          })
+          .then(exchange => {
+            if (exchange.USD) {
+              tiker.value = exchange.USD;
+              if (self.selected == tiker.name) {
+                self.graph.push(exchange.USD);
+              }
+            } else {
+              throw Error("Токен не найден");
+            }
+          })
+          .catch(err => {
+            self.error = err;
+          });
+      });
+    },
     searchTiket: async function() {
       let self = this;
       if (this.isValidTiket()) {
@@ -201,8 +243,31 @@ export default {
       }
       return true;
     },
+    removeTiketByName: function(name) {
+      if (this.selected == name) {
+        this.select(null);
+      }
+      this.tikerList = this.tikerList.filter(tiker => tiker.name !== name);
+    },
+    select: function(name) {
+      if (this.selected != name) {
+        this.selected = name;
+        this.graph = [];
+      }
+    },
+    isSelected: function(name) {
+      return this.selected == name;
+    },
     clearError: function() {
       this.error = null;
+    },
+    normilizeGraph: function() {
+      let min = Math.min(...this.graph);
+      let max = Math.max(...this.graph);
+      let interval = max == min ? 1 : max - min;
+      return this.graph.map(function (val) {
+          return Math.round( (val - min) / interval * 90 + 5 );
+      });
     }
   }
 };
