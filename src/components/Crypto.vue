@@ -5,9 +5,9 @@
       <section>
         <div class="flex">
           <div class="max-w-xs">
-            <label for="wallet" class="block text-sm font-medium text-gray-700"
-              >Тикер</label
-            >
+            <label for="wallet" class="block text-sm font-medium text-gray-700">
+              Тикер
+            </label>
             <div class="mt-1 relative rounded-md shadow-md">
               <input
                 v-model="newTiket"
@@ -16,44 +16,84 @@
                 type="text"
                 name="wallet"
                 id="wallet"
-                class="block w-full pr-10 border-gray-300 text-gray-900 focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm rounded-md"
+                class="
+                  block
+                  w-full
+                  pr-10
+                  border-gray-300
+                  text-gray-900
+                  focus:outline-none
+                  focus:ring-gray-500
+                  focus:border-gray-500
+                  sm:text-sm
+                  rounded-md
+                "
                 placeholder="Например DOGE"
               />
             </div>
+
             <div
+              v-if="relevantCoinList.length"
               class="flex bg-white shadow-md p-1 rounded-md shadow-md flex-wrap"
             >
-            @todo
               <span
-                class="inline-flex items-center px-2 m-1 rounded-md text-xs font-medium bg-gray-300 text-gray-800 cursor-pointer"
+                v-for="variant of relevantCoinList"
+                :key="variant.id"
+                v-on:click="
+                  newTiket = variant.Symbol;
+                  searchTiket();
+                "
+                class="
+                  inline-flex
+                  items-center
+                  px-2
+                  m-1
+                  rounded-md
+                  text-xs
+                  font-medium
+                  bg-gray-300
+                  text-gray-800
+                  cursor-pointer
+                "
               >
-                BTC
-              </span>
-              <span
-                class="inline-flex items-center px-2 m-1 rounded-md text-xs font-medium bg-gray-300 text-gray-800 cursor-pointer"
-              >
-                DOGE
-              </span>
-              <span
-                class="inline-flex items-center px-2 m-1 rounded-md text-xs font-medium bg-gray-300 text-gray-800 cursor-pointer"
-              >
-                BCH
-              </span>
-              <span
-                class="inline-flex items-center px-2 m-1 rounded-md text-xs font-medium bg-gray-300 text-gray-800 cursor-pointer"
-              >
-                CHD
+                <img
+                  :src="previewIcon(variant.ImageUrl)"
+                  width="10"
+                  height="10"
+                  alt="{{variant.FullName}}"
+                  class="mr-1"
+                />{{ variant.Symbol }}
               </span>
             </div>
+
             <div class="text-sm text-red-600">
-              {{error}}
+              {{ error }}
             </div>
           </div>
         </div>
         <button
           type="button"
           v-on:click="searchTiket"
-          class="my-4 inline-flex items-center py-2 px-4 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-full text-white bg-gray-600 hover:bg-gray-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+          class="
+            my-4
+            inline-flex
+            items-center
+            py-2
+            px-4
+            border border-transparent
+            shadow-sm
+            text-sm
+            leading-4
+            font-medium
+            rounded-full
+            text-white
+            bg-gray-600
+            hover:bg-gray-700
+            transition-colors
+            duration-300
+            focus:outline-none
+            focus:ring-2 focus:ring-offset-2 focus:ring-gray-500
+          "
         >
           <!-- Heroicon name: solid/mail -->
           <svg
@@ -78,23 +118,44 @@
         <div
           v-for="tiker of tikerList"
           :key="tiker.name"
-          class="bg-white overflow-hidden shadow rounded-lg border-purple-800 border-solid cursor-pointer"
-          :class="{'border-4': isSelected(tiker.name)}"
+          class="
+            bg-white
+            overflow-hidden
+            shadow
+            rounded-lg
+            border-purple-800 border-solid
+            cursor-pointer
+          "
+          :class="{ 'border-4': isSelected(tiker.name) }"
         >
-          <div
-            @click="select(tiker.name)"
-            class="px-4 py-5 sm:p-6 text-center">
+          <div @click="select(tiker.name)" class="px-4 py-5 sm:p-6 text-center">
             <dt class="text-sm font-medium text-gray-500 truncate">
-              {{tiker.name}} - USD
+              {{ tiker.name }} - USD
             </dt>
             <dd class="mt-1 text-3xl font-semibold text-gray-900">
-              {{tiker.value}} $
+              {{ tiker.value }} $
             </dd>
           </div>
           <div class="w-full border-t border-gray-200"></div>
           <button
             @click="removeTiketByName(tiker.name)"
-            class="flex items-center justify-center font-medium w-full bg-gray-100 px-4 py-4 sm:px-6 text-md text-gray-500 hover:text-gray-600 hover:bg-gray-200 hover:opacity-20 transition-all focus:outline-none"
+            class="
+              flex
+              items-center
+              justify-center
+              font-medium
+              w-full
+              bg-gray-100
+              px-4
+              py-4
+              sm:px-6
+              text-md text-gray-500
+              hover:text-gray-600
+              hover:bg-gray-200
+              hover:opacity-20
+              transition-all
+              focus:outline-none
+            "
           >
             <svg
               class="h-5 w-5"
@@ -115,22 +176,24 @@
 
       <hr class="w-full border-t border-gray-600 my-4" />
 
-      <section
-        v-if="selected"
-        class="relative">
+      <section v-if="selected" class="relative">
         <h3 class="text-lg leading-6 font-medium text-gray-900 my-8">
-          {{selected}} - USD
+          {{ selected }} - USD
         </h3>
         <div class="flex items-end border-gray-600 border-b border-l h-64">
           <div
-            v-for="(val, index) of normilizeGraph()"
+            v-for="(val, index) of normilizeGraph"
             :key="index"
-            class="bg-purple-800 border w-10" :style="{'height': val+'%'}"></div>
+            :style="{ height: val + '%' }"
+            :title="getTitleByIndex(index)"
+            class="bg-purple-800 border w-10"
+          ></div>
         </div>
         <button
           @click="select(null)"
           type="button"
-          class="absolute top-0 right-0">
+          class="absolute top-0 right-0"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -141,7 +204,7 @@
             x="0"
             y="0"
             viewBox="0 0 511.76 511.76"
-            style="enable-background:new 0 0 512 512"
+            style="enable-background: new 0 0 512 512"
             xml:space="preserve"
           >
             <g>
@@ -159,39 +222,62 @@
 </template>
 
 <script>
-
-import Spiner from './Spiner.vue';
+import Spiner from "./Spiner.vue";
 
 export default {
   components: { Spiner },
   name: "Crypro",
   data() {
     return {
+      API_KEY:
+        "&api_key=9b53fb3b2daab7f7df34d09bcf8b32266a23d799a8e23af20b601c381e349161",
       newTiket: "",
       tikerList: [],
       selected: null,
       graph: [],
       error: null,
+      coinList: [],
     };
   },
   created: function () {
+    this.initializeCoinList();
     setInterval(this.update, 5000);
   },
   methods: {
-    update: function() {
+    initializeCoinList: async function () {
+      let self = this;
+      await fetch(
+        `https://min-api.cryptocompare.com/data/all/coinlist?summary=true${self.API_KEY}`
+      )
+        .then((response) => {
+          if (response.status == 200) {
+            return response.json();
+          }
+          throw Error("Список монет не доступен");
+        })
+        .then((list) => {
+          self.coinList = [...Object.values(list.Data)];
+        })
+        .catch((err) => {
+          self.error = err;
+        });
+    },
+    update: function () {
       if (!this.tikerList) {
         return false;
       }
       this.tikerList.forEach(async (tiker) => {
         let self = this;
-        await fetch(`https://min-api.cryptocompare.com/data/price?fsym=${tiker.name}&tsyms=USD&api_key=9b53fb3b2daab7f7df34d09bcf8b32266a23d799a8e23af20b601c381e349161`)
-          .then(response => {
+        await fetch(
+          `https://min-api.cryptocompare.com/data/price?fsym=${tiker.name}&tsyms=USD${self.API_KEY}`
+        )
+          .then((response) => {
             if (response.status == 200) {
               return response.json();
             }
             throw Error("Сервер не отвечает");
           })
-          .then(exchange => {
+          .then((exchange) => {
             if (exchange.USD) {
               tiker.value = exchange.USD;
               if (self.selected == tiker.name) {
@@ -201,74 +287,115 @@ export default {
               throw Error("Токен не найден");
             }
           })
-          .catch(err => {
+          .catch((err) => {
             self.error = err;
           });
       });
     },
-    searchTiket: async function() {
+    searchTiket: async function () {
       let self = this;
       if (this.isValidTiket()) {
-        await fetch(`https://min-api.cryptocompare.com/data/price?fsym=${this.newTiket}&tsyms=USD&api_key=9b53fb3b2daab7f7df34d09bcf8b32266a23d799a8e23af20b601c381e349161`)
-          .then(response => {
+        await fetch(
+          `https://min-api.cryptocompare.com/data/price?fsym=${this.newTiket}&tsyms=USD${self.API_KEY}`
+        )
+          .then((response) => {
             if (response.status == 200) {
               return response.json();
             }
             throw Error("Сервер не отвечает");
           })
-          .then(exchange => {
+          .then((exchange) => {
             if (exchange.USD) {
               self.tikerList.push({
                 name: self.newTiket.toUpperCase(),
                 value: exchange.USD,
               });
               self.newTiket = "";
+              self.clearError();
             } else {
               throw Error("Токен не найден");
             }
           })
-          .catch(err => {
+          .catch((err) => {
             self.error = err;
           });
       }
     },
-    isValidTiket: function() {
+    isValidTiket: function () {
       if (this.newTiket == "") {
         this.error = "Введите тикер";
         return false;
       }
-      if (this.tikerList.some(tiker => tiker.name == this.newTiket.toUpperCase())) {
+      if (
+        this.tikerList.some(
+          (tiker) => tiker.name == this.newTiket.toUpperCase()
+        )
+      ) {
         this.error = "Такой тикер уже добавлен";
         return false;
       }
       return true;
     },
-    removeTiketByName: function(name) {
+    removeTiketByName: function (name) {
       if (this.selected == name) {
         this.select(null);
       }
-      this.tikerList = this.tikerList.filter(tiker => tiker.name !== name);
+      this.tikerList = this.tikerList.filter((tiker) => tiker.name !== name);
     },
-    select: function(name) {
+    select: function (name) {
       if (this.selected != name) {
         this.selected = name;
         this.graph = [];
       }
     },
-    isSelected: function(name) {
+    isSelected: function (name) {
       return this.selected == name;
     },
-    clearError: function() {
+    clearError: function () {
       this.error = null;
     },
-    normilizeGraph: function() {
+    getTitleByIndex: function (index) {
+      let value = this.graph[index];
+      if (index) {
+        let diff = (value - this.graph[index - 1], 2).toFixed(2);
+        return value + ": " + (diff > 0 ? "+" + diff : diff);
+      }
+      return value;
+    },
+    previewIcon: function (path) {
+      return "//www.cryptocompare.com" + path;
+    },
+  },
+  computed: {
+    normilizeGraph: function () {
       let min = Math.min(...this.graph);
       let max = Math.max(...this.graph);
       let interval = max == min ? 1 : max - min;
+
       return this.graph.map(function (val) {
-          return Math.round( (val - min) / interval * 90 + 5 );
+        return Math.round(((val - min) / interval) * 90 + 5);
       });
-    }
-  }
+    },
+    relevantCoinList: function () {
+      let self = this;
+      let limit = 3;
+      let foundedCount = 0;
+
+      if (self.newTiket.length == 0) {
+        return [];
+      }
+
+      return this.coinList.filter(function (val) {
+        if (
+          foundedCount < limit &&
+          val.FullName.toLowerCase().includes(self.newTiket.toLowerCase())
+        ) {
+          foundedCount++;
+          return true;
+        }
+        return false;
+      });
+    },
+  },
 };
 </script>
