@@ -1,6 +1,6 @@
 <template>
   <div class="container mx-auto flex flex-col items-center bg-gray-100 p-4">
-    <spiner v-bind:isShow="false"></spiner>
+    <spiner v-bind:isShow="!isLoaded" v-bind:isFixed="true"></spiner>
     <div class="container">
       <section>
         <div class="flex">
@@ -38,11 +38,12 @@
             >
               <span
                 v-for="variant of relevantCoinList"
-                :key="variant.id"
                 v-on:click="
                   newTiket = variant.Symbol;
                   searchTiket();
                 "
+                :key="variant.id"
+                :title="variant.FullName"
                 class="
                   inline-flex
                   items-center
@@ -58,9 +59,9 @@
               >
                 <img
                   :src="previewIcon(variant.ImageUrl)"
+                  :alt="variant.Symbol"
                   width="10"
                   height="10"
-                  alt="{{variant.FullName}}"
                   class="mr-1"
                 />{{ variant.Symbol }}
               </span>
@@ -72,8 +73,8 @@
           </div>
         </div>
         <button
-          type="button"
           v-on:click="searchTiket"
+          type="button"
           class="
             my-4
             inline-flex
@@ -118,6 +119,7 @@
         <div
           v-for="tiker of tikerList"
           :key="tiker.name"
+          :class="{ 'border-4': isSelected(tiker.name) }"
           class="
             bg-white
             overflow-hidden
@@ -126,7 +128,6 @@
             border-purple-800 border-solid
             cursor-pointer
           "
-          :class="{ 'border-4': isSelected(tiker.name) }"
         >
           <div @click="select(tiker.name)" class="px-4 py-5 sm:p-6 text-center">
             <dt class="text-sm font-medium text-gray-500 truncate">
@@ -177,6 +178,7 @@
       <hr class="w-full border-t border-gray-600 my-4" />
 
       <section v-if="selected" class="relative">
+        <spiner v-bind:isShow="graph.length == 0"></spiner>
         <h3 class="text-lg leading-6 font-medium text-gray-900 my-8">
           {{ selected }} - USD
         </h3>
@@ -185,7 +187,7 @@
             v-for="(val, index) of normilizeGraph"
             :key="index"
             :style="{ height: val + '%' }"
-            :title="getTitleByIndex(index)"
+            :title="graph[index]"
             class="bg-purple-800 border w-10"
           ></div>
         </div>
@@ -229,6 +231,7 @@ export default {
   name: "Crypro",
   data() {
     return {
+      isLoaded: false,
       API_KEY:
         "&api_key=9b53fb3b2daab7f7df34d09bcf8b32266a23d799a8e23af20b601c381e349161",
       newTiket: "",
@@ -257,6 +260,7 @@ export default {
         })
         .then((list) => {
           self.coinList = [...Object.values(list.Data)];
+          self.isLoaded = true;
         })
         .catch((err) => {
           self.error = err;
@@ -353,14 +357,6 @@ export default {
     },
     clearError: function () {
       this.error = null;
-    },
-    getTitleByIndex: function (index) {
-      let value = this.graph[index];
-      if (index) {
-        let diff = (value - this.graph[index - 1], 2).toFixed(2);
-        return value + ": " + (diff > 0 ? "+" + diff : diff);
-      }
-      return value;
     },
     previewIcon: function (path) {
       return "//www.cryptocompare.com" + path;
