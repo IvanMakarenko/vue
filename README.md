@@ -7,6 +7,8 @@ Example app from [course](https://www.youtube.com/watch?v=4XTy6ucbLNg&list=PLvTB
  * Realize local storage, for save selected wallets
  * Refactore code into components
  * Fix markup
+ * Filtration on added coins
+ * Pagination for added coins
 
 ## Setup
 Was remake from default to [Vite](https://vitejs.dev/).
