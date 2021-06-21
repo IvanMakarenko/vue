@@ -1,26 +1,17 @@
-# vue
+# VueJS project
 
-## Project setup
-```
-npm install
-```
+## Source
+Example app from [course](https://www.youtube.com/watch?v=4XTy6ucbLNg&list=PLvTBThJr861yMBhpKafII3HZLAYujuNWw&index=1).
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+### Todo list:
+ * Realize local storage, for save selected wallets
+ * Refactore code into components
+ * Fix markup
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## Setup
+Was remake from default to [Vite](https://vitejs.dev/).
 
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Additional docs
+## Additional docs
  * [vue-router](https://router.vuejs.org)
  * [vuex](https://vuex.vuejs.org)
  * [vue-devtools](https://github.com/vuejs/vue-devtools#vue-devtools)
